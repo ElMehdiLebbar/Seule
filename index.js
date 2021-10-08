@@ -1111,7 +1111,7 @@ class Seule {
 
         sc.bottom = () => {
             const c = context.documentElement.scrollTop || context.body.scrollTop,
-                h = document.body.scrollHeight;
+                h = context.body.scrollHeight;
 
             if (window.innerHeight + window.scrollY >= context.body.offsetHeight) {
                 window.scrollTo(0, c + h / 40);
@@ -1169,14 +1169,14 @@ class Seule {
         return resultMatch;
     }
 
-    static Print(options) {
+    static Print(options, context = document) {
         let title = options.title || "",
-            body = document.querySelector("body");
+            body = context.querySelector("body");
         body.insertAdjacentHTML(
             "beforeend",
             '<iframe class="seule--frame" name="sframe" style="position: fixed; bottom: -100%"></iframe>'
         );
-        let iframeEl = document.getElementsByClassName("seule--frame")[0];
+        let iframeEl = context.getElementsByClassName("seule--frame")[0];
         let frameDoc = iframeEl.contentWindow
             ? iframeEl.contentWindow
             : iframeEl.contentDocument.document
