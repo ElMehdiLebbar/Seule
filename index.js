@@ -4,13 +4,15 @@ class Seule {
     constructor(app) {
         this.child = false;
         this.data = app.data || {};
+        this.RootElement = selectElement(app.el);
 
         let old = "",
+            firstEl = selectElement(app.el),
             init = () => this.Init(),
             Shadow = () => {
-                let el = selectElement(app.el).el,
+                let el = firstEl.el,
                     seule = {},
-                    e = selectElement(app.el).e,
+                    e = firstEl.e,
                     child = "";
 
                 getEventListener();
@@ -21,7 +23,7 @@ class Seule {
                         const shadow = this.attachShadow({
                             mode: "closed"
                         });
-                        let links = document.querySelector("link"),
+                        let links = firstEl.context.querySelector("link"),
                             linkElement = document.createElement("link");
                         linkElement.setAttribute("rel", "stylesheet");
 
@@ -52,7 +54,7 @@ class Seule {
                     constructor(select) {
                         if(!select) return new el(parent);
                         try {
-                            dom ? this.el = document.querySelectorAll(select) :
+                            dom ? this.el = firstEl.context.querySelectorAll(select) :
                                 this.el = parent.querySelectorAll(select);
                         } catch (e) {
                             select.length ? this.el = select :
@@ -741,7 +743,7 @@ class Seule {
                         if (getComputedStyle(this.el[0].parentElement).position === "fixed")
                             scrollToItemId(this.el[0].parentNode, this.el[0]);
                         else {
-                            const c = document.documentElement || document.body;
+                            const c = firstEl.context.documentElement || firstEl.context.body;
                             scrollToItemId(c, this.el[0]);
                         }
                         return this;
@@ -889,7 +891,7 @@ class Seule {
         if (options.form) {
             let newForm =
                 parent.querySelector(options.form) ||
-                document.querySelector(options.form);
+                this.RootElement.querySelector(options.form);
             formData = new FormData(newForm);
 
             newForm.onsubmit = async (e) => e.preventDefault();
@@ -1085,11 +1087,11 @@ class Seule {
         return dt;
     }
 
-    static Scroll() {
-        let sc = {};
+    static Scroll(context = document) {
+        let sc = {}
 
         sc.top = () => {
-            const c = document.documentElement.scrollTop || document.body.scrollTop;
+            const c = context.documentElement.scrollTop || context.body.scrollTop;
 
             if (c > 0) {
                 window.requestAnimationFrame(sc.top);
@@ -1100,10 +1102,10 @@ class Seule {
         };
 
         sc.bottom = () => {
-            const c = document.documentElement.scrollTop || document.body.scrollTop,
+            const c = context.documentElement.scrollTop || context.body.scrollTop,
                 h = document.body.scrollHeight;
 
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+            if (window.innerHeight + window.scrollY >= context.body.offsetHeight) {
                 window.scrollTo(0, c + h / 40);
                 return;
             }
@@ -1117,7 +1119,7 @@ class Seule {
             window.onscroll = (ev) => {
                 if (
                     window.innerHeight + window.scrollY >=
-                    document.body.offsetHeight - before
+                    context.body.offsetHeight - before
                 )
                     handler(this);
             };
@@ -1211,7 +1213,7 @@ class Seule {
 
             let unit = options.unit || "percent",
                 distanceFromTop = options.distance,
-                winY = window.innerHeight || document.documentElement.clientHeight,
+                winY = window.innerHeight || this.RootElement.documentElement.clientHeight,
                 distTop = elem.getBoundingClientRect().top,
                 distPercent = Math.round((distTop / winY) * 100),
                 distPixels = Math.round(distTop),
@@ -1533,11 +1535,13 @@ class Seule {
     }
 }
 
-function selectElement(el) {
+function selectElement(el, context = document) {
     let element = {};
 
+    element.context = context;
+
     try {
-        element.el = document.querySelector(el);
+        element.el = context.querySelector(el);
         element.e = el.replace("#", "")
     } catch (e) {
         element.el = el;
