@@ -34,7 +34,7 @@ class Seule {
                                     if (link.getAttribute("href").includes(".css"))
                                         linkElement.setAttribute("href", link.getAttribute("href"));
                             }
-                            else linkElement.setAttribute("href", app.style + ".css");
+                            else linkElement.setAttribute("href", app.style);
 
                         }
 
