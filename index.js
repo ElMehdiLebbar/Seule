@@ -23,13 +23,21 @@ class Seule {
                         const shadow = this.attachShadow({
                             mode: "closed"
                         });
-                        let links = firstEl.context.querySelector("link"),
+                        let links = firstEl.context.querySelectorAll("link"),
                             linkElement = document.createElement("link");
+
                         linkElement.setAttribute("rel", "stylesheet");
 
-                        app.mode && linkElement.setAttribute("href", links.getAttribute("href"));
+                        if(app.style){
+                            if(app.style === "root"){
+                                for (const link of links)
+                                    if (link.getAttribute("href").includes(".css"))
+                                        linkElement.setAttribute("href", link.getAttribute("href"));
+                            }
+                            else linkElement.setAttribute("href", app.style + ".css");
 
-                        app.style && linkElement.setAttribute("href", app.style + ".css");
+                        }
+
                         shadow.appendChild(linkElement);
                         let cl = el.cloneNode(true);
                         el.innerHTML = "";
