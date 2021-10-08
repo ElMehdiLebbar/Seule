@@ -24,7 +24,7 @@ You can create an index.html file and include Seule with:
 ```javascript
 import  { Seule } from "seule"
 const app = new Seule({
-    el: '#app',
+    el: document.querySelector("#app"),
     data: {
         message : 'hello Seule'
     }
