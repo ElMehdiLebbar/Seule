@@ -13,45 +13,19 @@ class Seule {
                     e = selectElement(app.el).e,
                     child = "";
 
-                Element.prototype._addEventListener = Element.prototype.addEventListener;
-                Element.prototype._removeEventListener = Element.prototype.removeEventListener;
-                Element.prototype.addEventListener = function(type,listener,useCapture=false) {
-                    this._addEventListener(type,listener,useCapture);
-                    if(!this.eventListenerList) this.eventListenerList = {};
-                    if(!this.eventListenerList[type]) this.eventListenerList[type] = [];
-                    this.eventListenerList[type].push( {type, listener, useCapture} );
-                };
-                Element.prototype.removeEventListener = function(type,listener,useCapture=false) {
-                    this._removeEventListener(type,listener,useCapture);
-                    if(!this.eventListenerList) this.eventListenerList = {};
-                    if(!this.eventListenerList[type]) this.eventListenerList[type] = [];
-                    for(let i=0; i<this.eventListenerList[type].length; i++){
-                        if( this.eventListenerList[type][i].listener===listener && this.eventListenerList[type][i].useCapture===useCapture){
-                            this.eventListenerList[type].splice(i, 1);
-                            break;
-                        }
-                    }
-                    if(this.eventListenerList[type].length===0) delete this.eventListenerList[type];
-                };
-                Element.prototype.getEventListeners = function(type){
-                    if(!this.eventListenerList) this.eventListenerList = {};
-                    if(type===undefined)  return this.eventListenerList;
-                    return this.eventListenerList[type];
-                };
+                getEventListener();
 
                 class Root extends HTMLElement {
                     constructor() {
                         super();
                         const shadow = this.attachShadow({
-                            mode: app.mode || "closed"
+                            mode: "closed"
                         });
-                        let links = document.querySelectorAll("link"),
+                        let links = document.querySelector("link"),
                             linkElement = document.createElement("link");
                         linkElement.setAttribute("rel", "stylesheet");
 
-                        for (const link of links)
-                            if (link.getAttribute("href").includes("seule"))
-                                linkElement.setAttribute("href", link.getAttribute("href"));
+                        app.mode && linkElement.setAttribute("href", links.getAttribute("href"));
 
                         app.style && linkElement.setAttribute("href", app.style + ".css");
                         shadow.appendChild(linkElement);
@@ -65,8 +39,6 @@ class Seule {
 
                 customElements.define("seule-" + e, Root);
                 seule = document.createElement("seule-" + e);
-
-                console.log(seule);
 
                 el.appendChild(seule);
                 this.child = child;
@@ -893,20 +865,6 @@ class Seule {
                 (s) => Find(s, true)
             );
         };
-
-        function selectElement(el) {
-            let element = {};
-
-            try {
-                element.el = document.querySelector(el);
-                element.e = el.replace("#", "")
-            } catch (e) {
-                element.el = el;
-                element.e = el.getAttribute("id").replace("#", "")
-            }
-
-            return element;
-        }
     }
 
     Root() {
@@ -1573,6 +1531,48 @@ class Seule {
         let i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
         return Math.round(bytes / Math.pow(1024, i), 2) + " " + sizes[i];
     }
+}
+
+function selectElement(el) {
+    let element = {};
+
+    try {
+        element.el = document.querySelector(el);
+        element.e = el.replace("#", "")
+    } catch (e) {
+        element.el = el;
+        element.e = el.getAttribute("id").replace("#", "")
+    }
+
+    return element;
+}
+
+function getEventListener(){
+    Element.prototype._addEventListener = Element.prototype.addEventListener;
+    Element.prototype._removeEventListener = Element.prototype.removeEventListener;
+    Element.prototype.addEventListener = function(type,listener,useCapture=false) {
+        this._addEventListener(type,listener,useCapture);
+        if(!this.eventListenerList) this.eventListenerList = {};
+        if(!this.eventListenerList[type]) this.eventListenerList[type] = [];
+        this.eventListenerList[type].push( {type, listener, useCapture} );
+    };
+    Element.prototype.removeEventListener = function(type,listener,useCapture=false) {
+        this._removeEventListener(type,listener,useCapture);
+        if(!this.eventListenerList) this.eventListenerList = {};
+        if(!this.eventListenerList[type]) this.eventListenerList[type] = [];
+        for(let i=0; i<this.eventListenerList[type].length; i++){
+            if( this.eventListenerList[type][i].listener===listener && this.eventListenerList[type][i].useCapture===useCapture){
+                this.eventListenerList[type].splice(i, 1);
+                break;
+            }
+        }
+        if(this.eventListenerList[type].length===0) delete this.eventListenerList[type];
+    };
+    Element.prototype.getEventListeners = function(type){
+        if(!this.eventListenerList) this.eventListenerList = {};
+        if(type===undefined)  return this.eventListenerList;
+        return this.eventListenerList[type];
+    };
 }
 
 module.exports.Seule = Seule;
