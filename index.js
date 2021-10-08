@@ -8,9 +8,9 @@ class Seule {
         let old = "",
             init = () => this.Init(),
             Shadow = () => {
-                let el = document.querySelector(app.el),
+                let el = selectElement(app.el).el,
                     seule = {},
-                    e = app.el.replace("#", "").replace(".", ""),
+                    e = selectElement(app.el).e,
                     child = "";
 
                 Element.prototype._addEventListener = Element.prototype.addEventListener;
@@ -65,6 +65,9 @@ class Seule {
 
                 customElements.define("seule-" + e, Root);
                 seule = document.createElement("seule-" + e);
+
+                console.log(seule);
+
                 el.appendChild(seule);
                 this.child = child;
                 old = child.innerHTML;
@@ -890,6 +893,20 @@ class Seule {
                 (s) => Find(s, true)
             );
         };
+
+        function selectElement(el) {
+            let element = {};
+
+            try {
+                element.el = document.querySelector(el);
+                element.e = el.replace("#", "")
+            } catch (e) {
+                element.el = el;
+                element.e = el.getAttribute("id").replace("#", "")
+            }
+
+            return element;
+        }
     }
 
     Root() {
