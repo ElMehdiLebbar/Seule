@@ -40,6 +40,7 @@ class Seule {
                                 const l = document.createElement("link");
                                 l.setAttribute("rel", "stylesheet");
                                 l.setAttribute("href", app.style);
+                                shadow.appendChild(l);
                             }
                         }
 
