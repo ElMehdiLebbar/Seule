@@ -109,7 +109,7 @@ const app2 = new Seule({
 ```javascript
 const app = new Seule({
   el: '#app',
-  style: 'root' //Style Sheet ./css/app.css applying for the app in this case,
+  style: 'root', //Style Sheet ./css/app.css applying for the app in this case
   data:{
     message: "Hello World"    
   }
@@ -191,7 +191,7 @@ const app2 = new Seule({
 ```javascript
 const app = new Seule({
   el: '#app',
-  style: 'root' //Style Sheet ./css/app.css applying for the app in this case,
+  style: 'root', //Style Sheet ./css/app.css applying for the app in this case
   data:{
     message: "Hello World"    
   }
