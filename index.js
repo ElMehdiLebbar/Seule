@@ -15,8 +15,6 @@ class Seule {
                     e = firstEl.e,
                     child = "";
 
-                getEventListener();
-
                 class Root extends HTMLElement {
                     constructor() {
                         super();
@@ -29,7 +27,7 @@ class Seule {
                             if(app.style === "root"){
                                 for (const link of links)
                                     if(link.getAttribute("about"))
-                                        if (link.getAttribute("about").includes("root")) {
+                                        if (link.getAttribute("about").includes(firstEl.e)) {
                                             const l = document.createElement("link");
                                             l.setAttribute("rel", "stylesheet");
                                             l.setAttribute("href", link.getAttribute("href"));
@@ -1565,7 +1563,7 @@ function selectElement(el, context = document) {
     return element;
 }
 
-function getEventListener(){
+(function(){
     Element.prototype._addEventListener = Element.prototype.addEventListener;
     Element.prototype._removeEventListener = Element.prototype.removeEventListener;
     Element.prototype.addEventListener = function(type,listener,useCapture=false) {
@@ -1591,6 +1589,6 @@ function getEventListener(){
         if(type===undefined)  return this.eventListenerList;
         return this.eventListenerList[type];
     };
-}
+}())
 
 module.exports.Seule = Seule;
