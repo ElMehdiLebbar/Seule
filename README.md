@@ -11,7 +11,9 @@ You can create an index.html file and include Seule with:
 
 # Installation
 
-`npm i seule --save`
+```javascript
+npm i seule --save
+```
 
 🔹 At the core of Seule.js is a system that enables us to declaratively render data to the DOM using straightforward template syntax:
 
