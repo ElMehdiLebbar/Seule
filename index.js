@@ -65,6 +65,7 @@ class Seule {
                 {
                     constructor(select) {
                         if(!select) return new el(parent);
+                        if(!select && dom) return new el(window);
                         try {
                             dom ? this.el = firstEl.context.querySelectorAll(select) :
                                 this.el = parent.querySelectorAll(select);
