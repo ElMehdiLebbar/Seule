@@ -24,21 +24,21 @@ class Seule {
                         let links = firstEl.context.querySelectorAll("head link");
 
                         if(app.style){
-                            if(app.style === "root"){
+                            if(app.style.includes(".css")){
+                                const l = document.createElement("link");
+                                l.setAttribute("rel", "stylesheet");
+                                l.setAttribute("href", app.style);
+                                shadow.appendChild(l);
+                            }
+                            else {
                                 for (const link of links)
                                     if(link.getAttribute("about"))
-                                        if (link.getAttribute("about").includes(firstEl.e)) {
+                                        if (link.getAttribute("about").includes(app.style)) {
                                             const l = document.createElement("link");
                                             l.setAttribute("rel", "stylesheet");
                                             l.setAttribute("href", link.getAttribute("href"));
                                             shadow.appendChild(l);
                                         }
-                            }
-                            else {
-                                const l = document.createElement("link");
-                                l.setAttribute("rel", "stylesheet");
-                                l.setAttribute("href", app.style);
-                                shadow.appendChild(l);
                             }
                         }
 
@@ -854,9 +854,11 @@ class Seule {
                 template(item) {
                     return options.template(item) || "";
                 },
-
-                handler(el, data, init) {
-                    options.handler && options.handler(el, data, init);
+                handler(el) {
+                    options.handler && options.handler(el);
+                },
+                callback(el) {
+                    options.callback && options.callback(el);
                 }
             });
             return this;
@@ -1263,10 +1265,10 @@ class Seule {
         return this;
     }
 
-    static PDO(data, options) {
-        if (options) {
+    static PDO(data, options, context = document) {
+        if (options)
             if (!options.query) options.query = (item) => item;
-        }
+
 
         let obj = [...data],
             child = [],
@@ -1457,22 +1459,32 @@ class Seule {
                     let sha = (done, shadow) => {
                         done = done || obj;
                         shadow.innerHTML = "";
-                        let parentElement = document.createElement("section");
+                        let parentElement = context.createElement("section");
                         parentElement.classList.add("s-parent");
 
-                        if (options.style.length === 1) {
-                            let linkElement = document.createElement("link");
-                            linkElement.setAttribute("rel", "stylesheet");
-                            linkElement.setAttribute("href", options.style[0]);
-                            shadow.appendChild(linkElement);
-                        } else {
-                            let style = document.createElement("style");
-                            style.textContent = options.style;
-                            shadow.appendChild(style);
+                        if(options.style){
+                            if(options.style.includes('.css')){
+                                let linkElement = context.createElement("link");
+                                linkElement.setAttribute("rel", "stylesheet");
+                                linkElement.setAttribute("href", options.style[0]);
+                                shadow.appendChild(linkElement);
+                            }
+                            else {
+                                let links = context.querySelectorAll("head link");
+
+                                for (const link of links)
+                                    if(link.getAttribute("about"))
+                                        if (link.getAttribute("about").includes(options.style)) {
+                                            const l = context.createElement("link");
+                                            l.setAttribute("rel", "stylesheet");
+                                            l.setAttribute("href", link.getAttribute("href"));
+                                            shadow.appendChild(l);
+                                        }
+                            }
                         }
 
                         for (const item of done) {
-                            let element = document.createElement("article");
+                            let element = context.createElement("article");
                             element.classList.add("s-article");
                             element.innerHTML = options.template(item);
                             parentElement.appendChild(element);
@@ -1490,30 +1502,36 @@ class Seule {
                             });
                             sha(obj, shadow);
 
-                            let initial = (done, handler) => {
-                                sha(done, shadow);
-                                handler && handler(shadow);
-                            };
-
                             if (options.mode !== "closed") {
                                 els = options.element;
 
                                 els.Select = (selector) =>
                                     options.find(shadow.querySelectorAll(selector));
-                            } else
+                            }
+                            else
                                 els.Select = () =>
                                     console.log(
                                         "mode is closed! to use Select method, Switch to the open Mode!"
                                     );
 
-                            options.handler && options.handler(els, obj, initial);
+                            els.Data = obj;
+                            els.Init = (data, handler)=> initial(data, handler);
+
+                            (obj.length && options.handler) ? options.handler(els): options.callback(options.find(shadow.querySelector('.s-parent')));
+
+                            function initial(done){
+                                sha(done, shadow);
+                                return options.handler(els)
+                            }
+
                         }
                     }
 
-                    customElements.define(options.selector, common);
-                } else {
+                    try {customElements.define(options.selector, common)}
+                    catch (e) {/*console.log('Data has been Reset!')*/}
+                }
+                else {
                     options.element.Html("").set();
-
                     for (const item of obj) {
                         options.element.Html(options.template(item)).append();
                     }
