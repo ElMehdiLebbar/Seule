@@ -410,3 +410,193 @@ new Instance({
 });
 ```
 
+### 🔰 Focus()
+
+The focus event occurs when an element gets focus (when selected by a mouse click or by "tab-navigating" to it).
+
+The Focus() method triggers the focus event, or attaches a function to run when a focus event occurs.
+
+#### 〽️ Syntax
+
+Trigger the focus event for selected elements:
+
+```javascript
+Select([CSS selectors]).Focus()
+```
+
+Attach a function to the focus event:
+
+```javascript
+Select([CSS selectors]).Focus([handler:<Function>])
+```
+#### Example
+
+🔹 Attach a function to the focus event. The focus event occurs when the <input> field gets focus:
+
+```html
+<div id='app'>
+    <input placeholder="Focus on me!" type="text">
+    <p>{{message}}</p>
+</div>
+```
+
+```javascript
+import {Instance} from "seule";
+import {Scope} from "seule/selectors";
+import {Events} from "seule/events";
+import {HtmlMethods} from "seule/htmlMethods";
+
+new Instance({
+    el: '#app',
+    data: {
+        message: "Click in the input field to see what happens!"
+    },
+    async handlers($app){
+        Events();
+        HtmlMethods();
+
+        const
+            scope = Scope($app),
+            input = scope.Select("input");
+
+        input
+            .Focus(e =>
+                e.Val().set = "Great work keep it up!");
+
+    }
+})
+```
+
+### 🔰 Blur()
+
+The blur event occurs when an element loses focus.
+
+The Blur() method triggers the blur event, or attaches a function to run when a blur event occurs.
+
+#### 〽️ Syntax
+
+Trigger the blur event for the selected elements:
+
+```javascript
+Select([CSS selectors]).Blur()
+```
+
+Attach a function to the focus event:
+
+```javascript
+Select([CSS selectors]).Blur([handler:<Function>])
+```
+#### Example
+
+🔹 Attach a function to the blur event. The blur event occurs when the <input> field loses focus:
+
+```html
+<div id='app'>
+    <input placeholder="Write something!" type="text">
+    <p>{{message}}</p>
+</div>
+```
+
+```javascript
+import {Instance} from "seule";
+import {Scope} from "seule/selectors";
+import {Events} from "seule/events";
+import {HtmlMethods} from "seule/htmlMethods";
+
+new Instance({
+    el: '#app',
+    data: {
+        message: "Click outside the field to lose focus (blur)."
+    },
+    async handlers($app){
+        Events();
+        HtmlMethods();
+
+        const
+            scope = Scope($app),
+            input = scope.Select("input"),
+            p = scope.Select("p");
+
+        input
+            .Blur(() =>
+                p.Text().set = "This input field has lost its focus!");
+
+    }
+});
+```
+
+## ↩️ Handling keyboard Events
+
+### 🔰 HotKey()
+
+With HotKey Method in Seule you can now handling keyboard shortcuts easly. 
+
+#### 〽️ Syntax
+
+```javascript
+Select([CSS selectors]).Hotkey([keys:<String>], [handler:<Function>], [prevent:<Boolean>]);
+```
+
+### SUPPORTED KEYS:
+
+For modifier keys you can use  <code>shift</code>, <code>ctrl</code>, <code>alt</code> or <code>meta</code>
+
+You can substitute  <code>option</code> for <code>alt</code> and <code>command</code> for <code>meta</code>
+
+Other special keys are <code>backspace</code>, <code>tab</code>, <code>enter</code>, <code>return</code>, <code>capslock</code>, <code>esc</code>, <code>escape</code>, <code>space</code>, <code>pageup</code>, <code>pagedown</code>, <code>end</code>, <code>home</code>, <code>left</code>, <code>up</code>, <code>right</code>, <code>down</code>, <code>ins</code>, <code>del</code>, and <code>plus</code>
+
+Any other key you should be able to reference by name like <code>a</code>, <code>/</code>, <code>$</code>, <code>*</code>, or <code>=</code>.
+
+#### Examples
+
+🔹 Hotkey event with Single key:
+
+```javascript
+Select('input').HotKey('m',
+    ()=> alert('M button is pressed on the Keyboard!'));
+```
+
+🔹 Combination of keys:
+
+```javascript
+Select('input').HotKey('ctrl s',
+    ()=> alert('You pressed ctrl+s!'));
+```
+
+🔹 Sequence of keys like Konami Style (:
+
+```javascript
+Select('input').HotKey('Left Right Left Right A C',
+    ()=> alert('Now you can play with Orochi Iori'));
+```
+
+🔹 Or you can specify keyboard events that will work anywhere including inside textarea/input fields like:
+
+```javascript
+import {Instance} from "seule";
+import {Hoisting} from "seule/selectors";
+import {Events} from "seule/events"
+
+
+new Instance({
+    el: '#app',
+    data: {
+        message: "Click outside the field to lose focus (blur)."
+    },
+    async handlers(){
+        Events();
+
+        const
+            wn = Hoisting("body");
+
+        wn.HotKey('ctrl r',
+            ()=> alert('Global keyboard shortcuts'));
+
+// if you want prevent the default refresh event under WINDOWS system
+        wn.HotKey('ctrl r',
+            ()=> alert('Global keyboard shortcuts'), true);
+
+    }
+});    
+```
+
