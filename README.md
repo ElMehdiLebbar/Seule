@@ -91,7 +91,7 @@ import {Instance} from "seule";
 
 const app = new Seule({
   el: '#app',
-  style: css, //Style Sheet ./css/app.css applying for the app in this case,
+  style: css, 
   data:{
     message: "Hello World"    
   }
