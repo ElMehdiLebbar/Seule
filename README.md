@@ -91,7 +91,7 @@ import {Instance} from "seule";
 
 const app = new Seule({
   el: '#app',
-  style: css, //Style Sheet ./css/app.css applying for the app in this case,
+  style: css, 
   data:{
     message: "Hello World"    
   }
@@ -196,13 +196,13 @@ Tip: For a list of all CSS Selectors, look at w3schools [!CSS Selectors Referenc
 
 #### Example
 
-🔹 You can select all &lt;p&gt elements on app like this:
+🔹 You can select all &lt;p&#62; elements on app like this:
 
 ```javascript
 Scope($app).Select("p")
 ```
 
-When a user clicks on a button, all &lt;p&gt; elements will be hidden:
+When a user clicks on a button, all &lt;p&#62; elements will be hidden:
     
 ```html
 <div id='app'>
@@ -222,10 +222,8 @@ import {Events} from "seule/events";
 new Instance({
   el: '#app',
   data:{message: "Hello my Friend"},
+  modules:{Effects, Events},
   async handlers($app){
-    Effects();
-    Events();
-
     const
             scope = Scope($app),
             btn = scope.Select("button"),
@@ -251,10 +249,25 @@ An event represents the precise moment when something happens. Examples:
 
 for mor details about [!Event reference](https://developer.mozilla.org/en-US/docs/Web/Events)
 
-#### 〽️ Syntax
+Before using Events in Seule, we have to import the Events method from the events module and call it into the main component Single.
+
+#### Example
+
+```javascript
+import {Instance} from "seule";
+import {Events} from "seule/events";
+
+new Instance({
+  el: '#app',
+  modules:{Events}
+});
+```
+
+### 🔰 On()
 
 using the **On** Method to assign an event to an element. 
 
+#### 〽️ Syntax
 ```javascript
 Select([CSS selectors]).On([event:<String>], [handler:<Function>])
 ```
@@ -285,9 +298,8 @@ new Instance({
     message: "Click the button to see what happens!",
     source: "https://bit.ly/3mA0FbG"
   },
+  modules:{Events},
   async handlers($app){
-    Events();
-
     const
             scope = Scope($app),
             btn = scope.Select("button");
@@ -345,9 +357,8 @@ new Instance({
     message: "Click the button to see what happens!",
     source: "https://bit.ly/3mA0FbG"
   },
+  modules:{Events},
   async handlers($app){
-    Events();
-
     const
             scope = Scope($app),
             btn = scope.Select("button");
@@ -397,10 +408,8 @@ new Instance({
     message: "Swipe left to see what happens!",
     tooltip : "See this demo on Mobile"
   },
+  modules:{Events, Effects},
   async handlers($app){
-    Events();
-    Effects();
-
     const body = Hoisting("body");
 
     body.Swipe("left", e=> e
@@ -431,7 +440,7 @@ Select([CSS selectors]).Focus([handler:<Function>])
 ```
 #### Example
 
-🔹 Attach a function to the focus event. The focus event occurs when the <input> field gets focus:
+🔹 Attach a function to the focus event. The focus event occurs when the &lt;input&#62; field gets focus:
 
 ```html
 <div id='app'>
@@ -451,10 +460,8 @@ new Instance({
     data: {
         message: "Click in the input field to see what happens!"
     },
+    modules:{Events, HtmlMethods},
     async handlers($app){
-        Events();
-        HtmlMethods();
-
         const
             scope = Scope($app),
             input = scope.Select("input");
@@ -488,7 +495,7 @@ Select([CSS selectors]).Blur([handler:<Function>])
 ```
 #### Example
 
-🔹 Attach a function to the blur event. The blur event occurs when the <input> field loses focus:
+🔹 Attach a function to the blur event. The blur event occurs when the &lt;input&#62; field loses focus:
 
 ```html
 <div id='app'>
@@ -508,10 +515,8 @@ new Instance({
     data: {
         message: "Click outside the field to lose focus (blur)."
     },
+    modules:{Events, HtmlMethods},
     async handlers($app){
-        Events();
-        HtmlMethods();
-
         const
             scope = Scope($app),
             input = scope.Select("input"),
@@ -583,9 +588,8 @@ new Instance({
     data: {
         message: "Click outside the field to lose focus (blur)."
     },
+    modules:{Events},
     async handlers(){
-        Events();
-
         const
             wn = Hoisting("body");
 
@@ -598,5 +602,46 @@ new Instance({
 
     }
 });    
+```
+
+## ↩️ More with Events
+
+There are so many things helpful in Seule like :
+
+### 🔰 Fire()
+
+Do you want to simulate event with a single statement? Then you may use Fire Method for that:
+
+#### 〽️ Syntax
+
+```javascript
+Select([CSS selectors]).Fire([event:<String>]);
+```
+#### Examples
+
+Simulate a mouse-click when moving the mouse pointer over a button:
+
+```html
+<div id='app'>
+    <button onclick="alert('Clicked !')">Hover Me !</button>
+</div>
+```
+
+```javascript
+import {Instance} from "./seule";
+import {Scope} from "./seule/selectors";
+import {Events} from "./seule/events";
+
+new Instance({
+    el: '#app',
+    modules:{Events},
+    async handlers($app){
+        const
+            scope = Scope($app),
+            btn = scope.Select("button");
+
+        btn.On('mouseover', e=> e.Fire("click"))
+    }
+});
 ```
 

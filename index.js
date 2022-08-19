@@ -1,7 +1,8 @@
-const { creatShadow, selectElement, init } = require('./locals/init');
+const { creatShadow, selectElement, init, bind_function} = require('./locals/init');
+
 
 class Seule {
-    constructor(app) {
+     constructor(app) {
 
         const params = new URL(window.location).searchParams.entries();
 
@@ -30,7 +31,27 @@ class Seule {
         if (app.data) this.data = new Proxy(app.data, handler);
         this.RootElement = parent.el;
 
-        app.handlers && app.handlers(this);
+        (async()=>{
+            if(app.css){
+                const {_Css} = require("./model");
+                const obj = Object.keys(app.css);
+                for (const o of obj) _Css(app.css[o]);
+            }
+            if(app.routes) {
+                const {Root} = require('./view');
+                await new Root(app.routes.el, app.routes);
+                if(app.routes.directives){
+                    const {_Directives} =  require("./model");
+                    _Directives(this, app.routes);
+                }
+
+            }
+            if(app.modules) await bind_function(app.modules, this);
+            if(app.handlers) await app.handlers(this);
+            if(app.views) await bind_function(app.views, this);
+            if(app.components) await bind_function(app.components, this);
+        })()
+
     }
 }
 
@@ -68,6 +89,10 @@ if(document){
     }());
 }
 
+
+
+
 module.exports = {
     Instance: Seule
 };
+

@@ -1,5 +1,5 @@
 const {setupShadow} = require('./setting');
-const { Initial, init } = require('../locals/init');
+const { Initial, init, bind_function} = require('../locals/init');
 
 class rootElement {
     constructor(el, routing) {
@@ -144,7 +144,12 @@ class View {
 
                 if (app.data) this.#el.data = new Proxy(app.data, handler);
 
-                app.handlers && app.handlers(this.#el);
+                (async()=>{
+                    if(app.handlers) await app.handlers(this.#el);
+                    if(app.components) await bind_function(app.components, this.#el);
+                })()
+
+
             }
         }
        try {

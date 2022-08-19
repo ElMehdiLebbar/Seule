@@ -31,7 +31,6 @@ class Component{
                     mode: "closed"
                 });
 
-
                 els.data = app.data;
                 els.Load = (data, handler)=> {
                     Load(data, shadow)

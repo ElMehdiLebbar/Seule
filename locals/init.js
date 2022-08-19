@@ -94,11 +94,23 @@ function Bind(el, obj) {
         }
     }
 }
+function bind_function(obj, root){
+    const comps = Object.entries(obj);
+    for(const comp of comps) {
+        try {
+            comp[1].then(res => res[comp[0]](root));
+        }catch (e){
+            comp[1](root);
+        }
+
+    }
+}
 
 module.exports = {
     selectElement: selectElement,
     creatShadow: creatShadow,
     init: Init,
     selectStyle: selectStyle,
-    Initial: Initial
+    Initial: Initial,
+    bind_function: bind_function
 };

@@ -1,6 +1,6 @@
 {
   "name": "seule",
-  "version": "2.1.8",
+  "version": "2.1.11",
   "description": "Seule.js is a progressive, incrementally-adoptable JavaScript framework for building UI on the web.",
   "main": "index.js",
   "scripts": {
